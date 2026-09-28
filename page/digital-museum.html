@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>乡村数字博物馆与村民故事 - 云上樟源</title>
+    <meta name="description" content="VR全景村落 · 村民故事 · 非遗文化 —— 数字化保存乡村记忆">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@300;400;500;600;700&family=Noto+Sans+SC:wght@300;400;500&family=Marcellus&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/site.css">
+    <style>
+        /* ---------- 页面局部样式 ---------- */
+        .vr-showcase {
+            display: grid;
+            grid-template-columns: 1.25fr 1fr;
+            gap: 56px;
+            align-items: center;
+        }
+        .vr-frame {
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+        }
+        .vr-frame img {
+            width: 100%;
+            height: 420px;
+            object-fit: cover;
+            transition: transform 1.2s var(--ease);
+        }
+        .vr-frame:hover img { transform: scale(1.06); }
+        .vr-frame .veil {
+            position: absolute;
+            inset: 0;
+            background: rgba(43, 51, 24, .35);
+            display: grid;
+            place-items: center;
+            color: var(--white);
+            font-size: 14.1px;
+            letter-spacing: .3em;
+        }
+        .vr-frame .veil i {
+            display: block;
+            text-align: center;
+            font-style: normal;
+            font-family: var(--serif);
+            border: 1px solid rgba(255,255,255,.6);
+            padding: 16px 34px;
+            backdrop-filter: blur(2px);
+        }
+        .vr-info h3 {
+            font-family: var(--serif);
+            font-size: 24.4px;
+            letter-spacing: .08em;
+            margin-bottom: 20px;
+        }
+        .vr-info p { color: var(--ink-soft); margin-bottom: 14px; }
+        .vr-feats {
+            margin-top: 30px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 18px;
+        }
+        .vr-feats .f {
+            border-top: 1px solid var(--line);
+            padding-top: 12px;
+        }
+        .vr-feats .f b {
+            font-family: var(--serif);
+            font-weight: 500;
+            display: block;
+            letter-spacing: .1em;
+        }
+        .vr-feats .f span { font-size: 12.2px; color: var(--ink-soft); }
+
+        .story-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 28px;
+        }
+        .story-card {
+            padding: 40px 34px;
+            position: relative;
+        }
+        .story-card .quote {
+            font-family: var(--latin);
+            font-size: 56.4px;
+            line-height: 1;
+            color: var(--clay);
+            opacity: .35;
+        }
+        .story-card h3 {
+            font-family: var(--serif);
+            font-size: 19.7px;
+            letter-spacing: .12em;
+            margin-top: 6px;
+        }
+        .story-card .role {
+            font-size: 11.8px;
+            letter-spacing: .2em;
+            color: var(--leaf);
+            margin: 6px 0 18px;
+        }
+        .story-card p { color: var(--ink-soft); font-size: 13.6px; }
+        .story-card .like {
+            margin-top: 22px;
+            background: none;
+            border: 1px solid var(--line);
+            padding: 8px 18px;
+            cursor: pointer;
+            font-size: 12.2px;
+            letter-spacing: .12em;
+            color: var(--ink-soft);
+            transition: all .3s;
+        }
+        .story-card .like:hover { border-color: var(--clay); color: var(--clay); }
+        .story-card .like.liked { border-color: var(--clay); color: var(--clay); }
+
+        .herd-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 28px;
+        }
+        .herd-card { overflow: hidden; }
+        .herd-card .pic {
+            height: 240px;
+            background-size: cover;
+            background-position: center;
+            transition: transform 1s var(--ease);
+        }
+        .herd-card:hover .pic { transform: scale(1.05); }
+        .herd-card .body { padding: 26px 28px 30px; }
+        .herd-card h3 {
+            font-family: var(--serif);
+            font-size: 18.8px;
+            letter-spacing: .1em;
+            margin-bottom: 10px;
+        }
+        .herd-card p { font-size: 13.2px; color: var(--ink-soft); margin-bottom: 16px; }
+
+        /* 留言簿 */
+        .wall { display: grid; grid-template-columns: 1fr 1.2fr; gap: 56px; }
+        .wall .msg-list { display: grid; gap: 14px; max-height: 460px; overflow: auto; padding-right: 8px; }
+        .wall .msg {
+            background: var(--white);
+            border: 1px solid var(--line);
+            padding: 16px 20px;
+        }
+        .wall .msg b { font-family: var(--serif); letter-spacing: .1em; }
+        .wall .msg time { float: right; font-size: 11.3px; color: var(--ink-soft); }
+        .wall .msg p { font-size: 13.2px; color: var(--ink-soft); margin-top: 4px; }
+
+        @media (max-width: 960px) {
+            .vr-showcase, .wall { grid-template-columns: 1fr; }
+            .story-grid, .herd-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="subnav">
+        <a class="logo" href="/"><span class="seal">樟</span><span>云上樟源</span></a>
+        <ul class="nav-links">
+            <li><a href="#vr">VR全景</a></li>
+            <li><a href="#stories">村民故事</a></li>
+            <li><a href="#heritage">非遗文化</a></li>
+            <li><a href="#wall">留言簿</a></li>
+        </ul>
+        <a class="back" href="/">← 返回首页</a>
+    </nav>
+
+    <section class="hero">
+        <div class="hero-bg" style="background-image:url('image/数字2.jpg')"></div>
+        <div class="container hero-inner">
+            <p class="kick">DIGITAL MUSEUM</p>
+            <h1>乡村数字博物馆<br>与村民故事</h1>
+            <p class="hero-desc">数字化保存乡村记忆，讲述连樟村的故事。VR 全景、村民口述、非遗技艺——在云端，随时走进这座岭南古村。</p>
+            <div class="hero-stats">
+                <div><div class="num">360°</div><div class="lbl">VR 全景漫游</div></div>
+                <div><div class="num">3 项</div><div class="lbl">非遗技艺展示</div></div>
+                <div><div class="num" id="stat-msgs">0</div><div class="lbl">游客留言</div></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- VR 全景 -->
+    <section id="vr" class="section">
+        <div class="container">
+            <div class="sec-head reveal">
+                <span class="eyebrow">VR PANORAMA</span>
+                <h2>VR 全景村落</h2>
+            </div>
+            <div class="vr-showcase">
+                <div class="vr-frame reveal" onclick="toast('VR 全景体验筹备中，敬请期待')">
+                    <img src="image/VR.png" alt="VR全景村落">
+                    <div class="veil"><i>进入全景漫游</i></div>
+                </div>
+                <div class="vr-info reveal d1">
+                    <h3>在线「漫步」连樟村</h3>
+                    <p>通过先进的 VR 技术，身临其境地游览连樟村的每一个角落。从古老的村口到现代的农业基地，360 度全景展示让您仿佛置身其中。</p>
+                    <p>支持电脑、手机、VR 设备多种终端，随时随地开启您的虚拟乡村之旅。</p>
+                    <div class="vr-feats">
+                        <div class="f"><b>古村民居</b><span>传统建筑风格展示</span></div>
+                        <div class="f"><b>田园风光</b><span>美丽乡村景色</span></div>
+                        <div class="f"><b>文化场所</b><span>村史馆 · 文化中心</span></div>
+                        <div class="f"><b>现代农业</b><span>智慧农业基地</span></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 村民故事 -->
+    <section id="stories" class="section alt">
+        <div class="container">
+            <div class="sec-head reveal">
+                <span class="eyebrow">VILLAGERS' TALES</span>
+                <h2>村民故事</h2>
+                <p>每一张面孔都是一段历史，每一句话语都带着泥土的芬芳。听见他们，才算真正到过连樟。</p>
+            </div>
+            <div class="story-grid" id="storyGrid"></div>
+        </div>
+    </section>
+
+    <!-- 非遗文化 -->
+    <section id="heritage" class="section">
+        <div class="container">
+            <div class="sec-head reveal">
+                <span class="eyebrow">INTANGIBLE HERITAGE</span>
+                <h2>非遗与文化</h2>
+            </div>
+            <div class="herd-grid" id="herdGrid"></div>
+        </div>
+    </section>
+
+    <!-- 留言簿 -->
+    <section id="wall" class="section alt">
+        <div class="container">
+            <div class="sec-head reveal">
+                <span class="eyebrow">GUESTBOOK</span>
+                <h2>参观留言簿</h2>
+                <p>把您的感受留在这里，与来自远方的朋友共享这份乡愁。</p>
+            </div>
+            <div class="wall">
+                <form class="reveal" id="msgForm">
+                    <div class="field">
+                        <label>您的称呼</label>
+                        <input id="msgName" required maxlength="20" placeholder="如：远方的朋友">
+                    </div>
+                    <div class="field">
+                        <label>留言内容</label>
+                        <textarea id="msgContent" required maxlength="200" placeholder="写下您想对连樟村说的话…"></textarea>
+                    </div>
+                    <button class="btn solid" type="submit"><span>留下足迹</span></button>
+                </form>
+                <div class="msg-list reveal d1" id="msgList"></div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="site">
+        <div class="container">
+            <div class="f-grid">
+                <div class="f-brand">
+                    <a class="logo" href="/"><span class="seal">樟</span><span>云上樟源</span></a>
+                    <p>连樟村文旅融合项目的统一数字入口。数字化保存乡村记忆，让每一位远道而来的朋友听见山风、看见炊烟、读懂乡愁。</p>
+                </div>
+                <div>
+                    <h4>板块导航</h4>
+                    <ul>
+                        <li><a href="/ip-portal">沉浸式 IP 门户</a></li>
+                        <li><a href="/study">研学与剧本杀</a></li>
+                        <li><a href="/mall">连樟甄选商城</a></li>
+                        <li><a href="/museum">数字博物馆</a></li>
+                        <li><a href="/community">互动社区</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4>联系方式</h4>
+                    <ul>
+                        <li>广东省清远市英德市<br>连江口镇连樟村</li>
+                        <li>info@lianzhang.com</li>
+                        <li>123-456-7890</li>
+                    </ul>
+                </div>
+                <div>
+                    <h4>开放时间</h4>
+                    <ul>
+                        <li>周一至周五 9:00 - 18:00</li>
+                        <li>周末及节假日 8:00 - 20:00</li>
+                        <li>云端服务 7×24 小时在线</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="f-bottom">
+                <span>© 2025 云上樟源 · 连樟村文旅融合数字平台 保留所有权利</span>
+                <span class="latin">LIANZHANG · CLOUD PLATFORM</span>
+            </div>
+        </div>
+    </footer>
+
+    <div class="toast"></div>
+
+    <script src="/assets/js/site.js"></script>
+    <script>
+        var $ = function (s) { return document.querySelector(s); };
+
+        function esc(s) {
+            return String(s).replace(/[&<>"']/g, function (c) {
+                return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+            });
+        }
+
+        // 村民故事
+        YZY.get('/api/museum/stories').then(function (d) {
+            $('#storyGrid').innerHTML = d.list.map(function (s, i) {
+                return '<div class="card story-card reveal' + (i ? ' d' + Math.min(i, 3) : '') + '">' +
+                    '<div class="quote">”</div>' +
+                    '<h3>' + esc(s.name) + '</h3>' +
+                    '<div class="role">' + esc(s.role) + '</div>' +
+                    '<p>' + esc(s.story) + '</p>' +
+                    '<button class="like" data-id="' + s.id + '">♡ 点赞 <span>' + (s.likes || 0) + '</span></button>' +
+                    '</div>';
+            }).join('');
+            bindLikes();
+            observeNew();
+        });
+
+        function bindLikes() {
+            document.querySelectorAll('.like').forEach(function (b) {
+                b.onclick = function () {
+                    YZY.post('/api/museum/stories/' + b.dataset.id + '/like').then(function (d) {
+                        b.classList.add('liked');
+                        b.querySelector('span').textContent = d.likes;
+                    }).catch(function (e) { toast(e.message); });
+                };
+            });
+        }
+
+        // 非遗
+        YZY.get('/api/museum/heritage').then(function (d) {
+            $('#herdGrid').innerHTML = d.list.map(function (h, i) {
+                return '<div class="card herd-card reveal' + (i ? ' d' + Math.min(i, 3) : '') + '">' +
+                    '<div class="pic" style="background-image:url(\'' + h.image + '\')"></div>' +
+                    '<div class="body"><h3>' + esc(h.title) + '</h3><p>' + esc(h.desc) + '</p>' +
+                    '<div>' + h.tags.map(function (t) { return '<span class="tagchip">' + esc(t) + '</span>'; }).join('') + '</div>' +
+                    '</div></div>';
+            }).join('');
+            observeNew();
+        });
+
+        // 留言簿
+        function loadMessages() {
+            YZY.get('/api/museum/messages').then(function (d) {
+                $('#stat-msgs').textContent = d.total;
+                $('#msgList').innerHTML = d.list.map(function (m) {
+                    return '<div class="msg"><b>' + esc(m.name) + '</b><time>' + esc(m.created) + '</time>' +
+                        '<p>' + esc(m.content) + '</p></div>';
+                }).join('') || '<div class="msg"><p>暂无留言，快来抢占第一楼～</p></div>';
+            });
+        }
+        $('#msgForm').addEventListener('submit', function (e) {
+            e.preventDefault();
+            var u = YZY.user();
+            YZY.post('/api/museum/messages', {
+                name: $('#msgName').value.trim() || (u ? u.username : '游客'),
+                content: $('#msgContent').value.trim()
+            }).then(function () {
+                toast('留言成功，感谢您的到访');
+                $('#msgForm').reset();
+                loadMessages();
+            }).catch(function (err) { toast(err.message); });
+        });
+        loadMessages();
+
+        // 动态插入的节点复用 site.js 的全局观察器
+        function observeNew() {
+            if (window.io) document.querySelectorAll('.reveal:not(.in)').forEach(function (el) { io.observe(el); });
+        }
+    </script>
+</body>
+</html>

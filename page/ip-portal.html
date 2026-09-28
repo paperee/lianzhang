@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>沉浸式IP门户与品牌展示 - 云上樟源</title>
+    <meta name="description" content="IP角色家族 · 品牌故事 · 衍生产品 —— 探索连樟村独特的文化IP">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@300;400;500;600;700&family=Noto+Sans+SC:wght@300;400;500&family=Marcellus&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/site.css">
+    <style>
+        .ip-family {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 28px;
+        }
+        .ip-card {
+          overflow: hidden;
+          position: relative;
+        }
+        .ip-card .pic {
+            height: 380px;
+            background-size: cover;
+            background-position: top center;
+            position: relative;
+        }
+        .ip-card .pic::after {
+            content: "";
+            position: absolute; inset: 0;
+            background: linear-gradient(180deg, transparent 60%, rgba(73, 81, 54, .55));
+        }
+        .ip-card .badge {
+            position: absolute;
+            top: 18px; left: 18px;
+            z-index: 2;
+            background: var(--clay);
+            color: var(--white);
+            font-size: 11.3px;
+            letter-spacing: .18em;
+            padding: 5px 14px;
+        }
+        .ip-card .body { padding: 26px 28px 30px; }
+        .ip-card h3 {
+            font-family: var(--serif);
+            font-size: 21.6px;
+            letter-spacing: .14em;
+        }
+        .ip-card .role {
+            font-size: 11.8px;
+            letter-spacing: .2em;
+            color: var(--leaf);
+            margin: 6px 0 14px;
+        }
+        .ip-card p { font-size: 13.2px; color: var(--ink-soft); }
+
+        .story-band {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 64px;
+            align-items: center;
+        }
+        .story-band h2 {
+            font-family: var(--serif);
+            font-size: clamp(26.3px, 3.38vw, 37.6px);
+            letter-spacing: .1em;
+            margin-bottom: 26px;
+        }
+        .story-band p { color: var(--ink-soft); margin-bottom: 14px; }
+        .story-band .pic {
+            height: 460px;
+            background-size: cover;
+            background-position: center;
+            position: relative;
+        }
+        .story-band .pic::after {
+            content: "连樟村 · 四季";
+            position: absolute;
+            right: -14px; bottom: -14px;
+            background: var(--pine);
+            color: var(--white);
+            font-family: var(--serif);
+            letter-spacing: .2em;
+            padding: 12px 22px;
+        }
+
+        .prod-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 28px;
+        }
+        .prod-card { overflow: hidden; position: relative; }
+        .prod-card .pic {
+            height: 300px;
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            align-items: flex-start;
+            justify-content: flex-end;
+        }
+        .prod-card .pic span {
+            background: var(--pine);
+            color: var(--white);
+            font-size: 11.3px;
+            letter-spacing: .16em;
+            padding: 5px 13px;
+            margin: 16px;
+        }
+        .prod-card .body { padding: 22px 26px 26px; display: flex; align-items: baseline; gap: 14px; }
+        .prod-card h3 {
+            font-family: var(--serif);
+            font-size: 16.9px;
+            letter-spacing: .08em;
+            flex: 1;
+        }
+        .prod-card .price { font-family: var(--serif); color: var(--clay); font-size: 17.9px; }
+
+        .zone-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 28px;
+        }
+        .zone-card { padding: 44px 36px; text-align: center; }
+        .zone-card .ic {
+            width: 64px; height: 64px;
+            margin: 0 auto 22px;
+            display: grid; place-items: center;
+            border: 1px solid var(--line);
+            border-radius: 50%;
+            color: var(--clay);
+            font-size: 22.6px;
+            transition: all .4s var(--ease);
+        }
+        .zone-card:hover .ic { background: var(--pine); border-color: var(--pine); color: var(--white); }
+        .zone-card h3 { font-family: var(--serif); letter-spacing: .12em; margin-bottom: 12px; }
+        .zone-card p { font-size: 13.2px; color: var(--ink-soft); }
+
+        .partner-grid {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 18px;
+        }
+        .partner {
+            border: 1px solid var(--line);
+            background: var(--white);
+            padding: 28px 10px;
+            text-align: center;
+            color: var(--ink-soft);
+            font-size: 12.2px;
+            letter-spacing: .12em;
+            transition: all .4s var(--ease);
+        }
+        .partner:hover { border-color: var(--leaf); color: var(--pine); transform: translateY(-4px); }
+
+        @media (max-width: 960px) {
+            .ip-family, .prod-grid, .zone-grid { grid-template-columns: 1fr; }
+            .story-band { grid-template-columns: 1fr; gap: 40px; }
+            .partner-grid { grid-template-columns: repeat(3, 1fr); }
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="subnav">
+        <a class="logo" href="/"><span class="seal">樟</span><span>云上樟源</span></a>
+        <ul class="nav-links">
+            <li><a href="#characters">IP角色</a></li>
+            <li><a href="#story">品牌故事</a></li>
+            <li><a href="#products">IP产品</a></li>
+            <li><a href="#interactive">互动体验</a></li>
+            <li><a href="#partners">合作伙伴</a></li>
+        </ul>
+        <a class="back" href="/">← 返回首页</a>
+    </nav>
+
+    <section class="hero">
+        <div class="hero-bg" style="background-image:url('image/首页1.jpeg')"></div>
+        <div class="container hero-inner">
+            <p class="kick">IMMERSIVE IP PORTAL</p>
+            <h1>沉浸式 IP 门户<br>与品牌展示</h1>
+            <p class="hero-desc">以「樟樟」为引，以光影为信。探索连樟村独特的文化 IP，感受乡村振兴的魅力——无论是线上体验还是线下互动，都能让您深度了解这片充满活力的土地。</p>
+            <div class="hero-stats">
+                <div><div class="num">3 位</div><div class="lbl">IP 家族角色</div></div>
+                <div><div class="num">6+</div><div class="lbl">衍生产品</div></div>
+                <div><div class="num">N 种</div><div class="lbl">互动体验</div></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- IP 角色家族 -->
+    <section id="characters" class="section">
+        <div class="container">
+            <div class="sec-head reveal">
+                <span class="eyebrow">IP FAMILY</span>
+                <h2>IP 角色家族</h2>
+            </div>
+            <div class="ip-family">
+                <div class="card ip-card reveal">
+                    <div class="pic" style="background-image:url('image/IP2.png')"><span class="badge">核心角色</span></div>
+                    <div class="body">
+                        <h3>樟樟</h3>
+                        <div class="role">连樟村文化使者</div>
+                        <p>活泼可爱的樟樟是连樟村的文化使者，代表着乡村的活力与希望。她热爱自然，喜欢探索连樟村的每一个角落，用温暖的语言向访客讲述着乡村的变迁与人文情怀。</p>
+                    </div>
+                </div>
+                <div class="card ip-card reveal d1">
+                    <div class="pic" style="background-image:url('image/IP1.jpg')"><span class="badge">文化守护者</span></div>
+                    <div class="body">
+                        <h3>源源</h3>
+                        <div class="role">非遗文化传承人</div>
+                        <p>心灵手巧的源源精通传统手工艺，是连樟村非遗文化的守护者。她从小跟随老艺人学习编织、陶艺等技艺，致力于将传统文化传承给下一代。</p>
+                    </div>
+                </div>
+                <div class="card ip-card reveal d2">
+                    <div class="pic" style="background-image:url('image/IP3.png')"><span class="badge">生态卫士</span></div>
+                    <div class="body">
+                        <h3>绿绿</h3>
+                        <div class="role">环保小卫士</div>
+                        <p>热爱大自然的绿绿倡导绿色生活，保护生态环境。每天都会在村里巡逻，捡拾垃圾，种植树木，用实际行动守护着连樟村的绿水青山。</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 品牌故事 -->
+    <section id="story" class="section alt">
+        <div class="container story-band">
+            <div class="reveal">
+                <span class="eyebrow">BRAND STORY</span>
+                <h2 style="margin-top:18px">把家乡装进云端<br>把远方引向田野</h2>
+                <p>云上樟源诞生于连樟村这片充满希望的土地上。作为乡村振兴的示范村，连樟村不仅有着优美的自然风光，更承载着深厚的文化底蕴和振兴的梦想。</p>
+                <p>我们相信，每个乡村都有自己独特的故事和价值。通过打造「云上樟源」这一 IP 品牌，我们希望让更多人了解连樟村，感受乡村振兴带来的变化。</p>
+                <p>从最初的农产品销售，到如今的研学旅游、剧本杀体验、数字博物馆，云上樟源不断拓展边界，但始终不忘初心——让乡村文化焕发新的生机。</p>
+            </div>
+            <div class="pic reveal d1" style="background-image:url('image/工作7.jpeg')"></div>
+        </div>
+    </section>
+
+    <!-- IP 衍生产品 -->
+    <section id="products" class="section">
+        <div class="container">
+            <div class="sec-head reveal">
+                <span class="eyebrow">IP PRODUCTS</span>
+                <h2>IP 衍生产品</h2>
+            </div>
+            <div class="prod-grid">
+                <div class="card prod-card reveal">
+                    <div class="pic" style="background-image:url('image/樟樟公仔.jpg')"><span>热销</span></div>
+                    <div class="body"><h3>樟樟公仔</h3><div class="price">¥89</div></div>
+                </div>
+                <div class="card prod-card reveal d1">
+                    <div class="pic" style="background-image:url('image/商城2.png')"><span>新品</span></div>
+                    <div class="body"><h3>连樟红茶礼盒</h3><div class="price">¥168</div></div>
+                </div>
+                <div class="card prod-card reveal d2">
+                    <div class="pic" style="background-image:url('image/商城10.webp')"><span>特色</span></div>
+                    <div class="body"><h3>非遗手工艺品</h3><div class="price">¥258</div></div>
+                </div>
+            </div>
+            <div style="margin-top:44px; text-align:center" class="reveal">
+                <a class="btn line" href="/mall"><span>更多好物 · 前往连樟甄选 →</span></a>
+            </div>
+        </div>
+    </section>
+
+    <!-- 互动体验 -->
+    <section id="interactive" class="section alt">
+        <div class="container">
+            <div class="sec-head reveal">
+                <span class="eyebrow">INTERACTIVE</span>
+                <h2>互动体验</h2>
+            </div>
+            <div class="zone-grid">
+                <div class="card zone-card reveal">
+                    <div class="ic">♟</div>
+                    <h3>VR 虚拟游览</h3>
+                    <p>通过 VR 技术，身临其境地游览连樟村的每一个角落，感受乡村的魅力。</p>
+                </div>
+                <div class="card zone-card reveal d1">
+                    <div class="ic">☋</div>
+                    <h3>IP 互动游戏</h3>
+                    <p>与樟樟、源源等 IP 角色一起玩游戏，在娱乐中了解连樟村文化。</p>
+                </div>
+                <div class="card zone-card reveal d2">
+                    <div class="ic">✈</div>
+                    <h3>创意工坊</h3>
+                    <p>在线参与手工艺制作，创作属于自己的 IP 衍生品。</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 合作伙伴 -->
+    <section id="partners" class="section">
+        <div class="container">
+            <div class="sec-head reveal">
+                <span class="eyebrow">PARTNERS</span>
+                <h2>合作伙伴</h2>
+            </div>
+            <div class="partner-grid reveal">
+                <div class="partner">教育机构</div>
+                <div class="partner">企业伙伴</div>
+                <div class="partner">文旅合作</div>
+                <div class="partner">电商平台</div>
+                <div class="partner">媒体伙伴</div>
+                <div class="partner">公益组织</div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="site">
+        <div class="container">
+            <div class="f-grid">
+                <div class="f-brand">
+                    <a class="logo" href="/"><span class="seal">樟</span><span>云上樟源</span></a>
+                    <p>以 IP 为引，以光影为信。云上樟源，让乡村文化焕发新的生机，让更多人爱上这片土地。</p>
+                </div>
+                <div>
+                    <h4>板块导航</h4>
+                    <ul>
+                        <li><a href="/ip-portal">沉浸式 IP 门户</a></li>
+                        <li><a href="/study">研学与剧本杀</a></li>
+                        <li><a href="/mall">连樟甄选商城</a></li>
+                        <li><a href="/museum">数字博物馆</a></li>
+                        <li><a href="/community">互动社区</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4>联系方式</h4>
+                    <ul>
+                        <li>广东省清远市英德市<br>连江口镇连樟村</li>
+                        <li>info@lianzhang.com</li>
+                        <li>123-456-7890</li>
+                    </ul>
+                </div>
+                <div>
+                    <h4>开放时间</h4>
+                    <ul>
+                        <li>周一至周五 9:00 - 18:00</li>
+                        <li>周末及节假日 8:00 - 20:00</li>
+                        <li>云端服务 7×24 小时在线</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="f-bottom">
+                <span>© 2025 云上樟源 · 连樟村文旅融合数字平台 保留所有权利</span>
+                <span class="latin">LIANZHANG · CLOUD PLATFORM</span>
+            </div>
+        </div>
+    </footer>
+
+    <div class="toast"></div>
+    <script src="/assets/js/site.js"></script>
+</body>
+</html>

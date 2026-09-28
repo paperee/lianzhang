@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>一体化研学与剧本杀服务平台 - 云上樟源</title>
+    <meta name="description" content="精品研学课程 × 实景剧本杀 —— 在线预约，玩转连樟">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@300;400;500;600;700&family=Noto+Sans+SC:wght@300;400;500&family=Marcellus&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/site.css">
+    <style>
+        .switch {
+            display: flex;
+            justify-content: center;
+            gap: 0;
+            margin-bottom: 64px;
+            border: 1px solid var(--line);
+            width: max-content;
+            margin-inline: auto;
+            background: var(--white);
+        }
+        .switch button {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-family: var(--serif);
+            font-size: 15px;
+            letter-spacing: .22em;
+            padding: 15px 44px;
+            color: var(--ink-soft);
+            transition: all .35s var(--ease);
+        }
+        .switch button.on { background: var(--pine); color: var(--white); }
+
+        .serve-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 28px;
+        }
+        .serve-card { overflow: hidden; display: flex; flex-direction: column; }
+        .serve-card .pic {
+            height: 225px;
+            background-size: cover;
+            background-position: center;
+            position: relative;
+        }
+        .serve-card .pic .badge {
+            position: absolute; top: 16px; left: 16px;
+            background: var(--clay); color: var(--white);
+            font-size: 11.3px; letter-spacing: .16em; padding: 4px 13px;
+        }
+        .serve-card .pic .ico {
+            position: absolute; right: 18px; bottom: -24px;
+            width: 48px; height: 48px;
+            background: var(--white);
+            border: 1px solid var(--line);
+            display: grid; place-items: center;
+            color: var(--clay); font-size: 18.8px;
+        }
+        .serve-card .body { padding: 30px 26px 26px; flex: 1; display: flex; flex-direction: column; }
+        .serve-card h3 { font-family: var(--serif); font-size: 17.9px; letter-spacing: .1em; }
+        .serve-card p { font-size: 12.7px; color: var(--ink-soft); margin: 10px 0 16px; flex: 1; }
+        .serve-card .meta {
+            display: flex; justify-content: space-between; align-items: center;
+            border-top: 1px solid var(--line); padding-top: 14px;
+            font-size: 12.2px; color: var(--ink-soft); letter-spacing: .08em;
+        }
+        .serve-card .book {
+            background: none; border: 1px solid var(--line);
+            padding: 7px 16px; cursor: pointer;
+            font-size: 12.2px; letter-spacing: .12em; color: var(--ink);
+            transition: all .3s;
+        }
+        .serve-card .book:hover { background: var(--clay); border-color: var(--clay); color: var(--white); }
+
+        /* 我的预约 */
+        .my-bookings { margin-top: 80px; }
+        .my-bookings table { width: 100%; border-collapse: collapse; background: var(--white); border: 1px solid var(--line); }
+        .my-bookings th, .my-bookings td {
+            text-align: left; padding: 14px 18px;
+            border-bottom: 1px solid var(--line); font-size: 13.2px;
+        }
+        .my-bookings th { font-family: var(--serif); letter-spacing: .14em; font-weight: 500; background: var(--paper-2); }
+        .my-bookings .st { color: var(--leaf); }
+        .my-bookings .st.off { color: var(--ink-soft); }
+        .my-bookings .cancel {
+            background: none; border: none; cursor: pointer;
+            color: var(--clay); font-size: 12.2px; letter-spacing: .1em;
+        }
+        .empty-tip { padding: 40px; text-align: center; color: var(--ink-soft); }
+
+        /* 单卡居中：研学/剧本杀各留 1 张时居中展示 */
+        .serve-grid:has(> :only-child) {
+            grid-template-columns: min(420px, 100%);
+            justify-content: center;
+        }
+
+        @media (max-width: 960px) {
+            .serve-grid { grid-template-columns: 1fr; }
+            .my-bookings table { display: block; overflow-x: auto; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="subnav">
+        <a class="logo" href="/"><span class="seal">樟</span><span>云上樟源</span></a>
+        <ul class="nav-links">
+            <li><a href="javascript:;" onclick="switchPanel('study')">研学课程</a></li>
+            <li><a href="javascript:;" onclick="switchPanel('script')">剧本杀</a></li>
+            <li><a href="#mine">我的预约</a></li>
+        </ul>
+        <a class="back" href="/">← 返回首页</a>
+    </nav>
+
+    <section class="hero">
+        <div class="hero-bg" style="background-image:url('image/研学.jpeg')"></div>
+        <div class="container hero-inner">
+            <p class="kick">STUDY &amp; SCRIPT LIVE</p>
+            <h1>一体化研学与<br>剧本杀服务平台</h1>
+            <p class="hero-desc">为学生和社会人士打造的沉浸式学习与娱乐体验。选一门课，入一场戏——在连樟村的田野与古巷里，收获知识与故事。</p>
+            <div class="hero-stats">
+                <div><div class="num">1 门</div><div class="lbl">精品研学课程</div></div>
+                <div><div class="num">1 部</div><div class="lbl">原创实景剧本杀</div></div>
+                <div><div class="num">10000+</div><div class="lbl">服务用户</div></div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section">
+        <div class="container">
+            <div class="switch reveal">
+                <button id="tab-study" class="on" onclick="switchPanel('study')">研学课程</button>
+                <button id="tab-script" onclick="switchPanel('script')">剧本杀</button>
+            </div>
+            <div class="serve-grid" id="serveGrid"></div>
+
+            <!-- 我的预约 -->
+            <div class="my-bookings" id="mine">
+                <div class="sec-head reveal" style="margin-bottom:32px">
+                    <span class="eyebrow">MY BOOKINGS</span>
+                    <h2 style="font-size: clamp(22.6px,3.2vw,30.1px)">我的预约</h2>
+                </div>
+                <div class="reveal" id="bookingBox"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 预约 / 登录模态框 -->
+    <div class="modal" id="authModal">
+        <div class="sheet">
+            <button class="x" onclick="closeAuth()">×</button>
+            <div class="tabs">
+                <button class="active" onclick="switchTab('login')">登录</button>
+                <button onclick="switchTab('register')">注册</button>
+            </div>
+            <form id="loginForm">
+                <div class="field"><label>用户名 / 手机号</label><input id="loginUsername" required placeholder="请输入用户名或手机号"></div>
+                <div class="field"><label>密码</label><input id="loginPassword" type="password" required placeholder="请输入密码"></div>
+                <button class="btn solid" type="submit" style="width:100%;justify-content:center"><span>登录</span></button>
+            </form>
+            <form id="registerForm" style="display:none">
+                <div class="field"><label>用户名</label><input id="registerUsername" required placeholder="请输入用户名"></div>
+                <div class="field"><label>手机号</label><input id="registerPhone" type="tel" required placeholder="请输入手机号"></div>
+                <div class="field"><label>用户类型</label>
+                    <select id="registerType" required>
+                        <option value="student">学生</option>
+                        <option value="social">社会人士</option>
+                    </select>
+                </div>
+                <div class="field"><label>密码</label><input id="registerPassword" type="password" required minlength="6" placeholder="至少 6 位"></div>
+                <div class="field"><label>确认密码</label><input id="registerConfirmPassword" type="password" required placeholder="请再次输入密码"></div>
+                <button class="btn solid" type="submit" style="width:100%;justify-content:center"><span>注册</span></button>
+            </form>
+        </div>
+    </div>
+
+    <!-- 预约信息模态框 -->
+    <div class="modal" id="bookModal">
+        <div class="sheet">
+            <button class="x" onclick="closeBook()">×</button>
+            <h3 id="bookTitle">预约</h3>
+            <form id="bookForm">
+                <div class="field"><label>预约日期</label><input id="bookDate" type="date" required></div>
+                <div class="field"><label>人数</label><input id="bookPeople" type="number" min="1" max="20" value="2" required></div>
+                <div class="field"><label>联系电话</label><input id="bookPhone" type="tel" placeholder="选填"></div>
+                <div class="field"><label>备注</label><textarea id="bookNote" placeholder="选填，如班级、特殊需求等"></textarea></div>
+                <button class="btn solid" type="submit" style="width:100%;justify-content:center"><span>确认预约</span></button>
+            </form>
+        </div>
+    </div>
+
+    <footer class="site">
+        <div class="container">
+            <div class="f-grid">
+                <div class="f-brand">
+                    <a class="logo" href="/"><span class="seal">樟</span><span>云上樟源</span></a>
+                    <p>研学 × 剧本杀，知识与故事的 double 奇遇。预约成功后请提前 15 分钟到达村民服务中心集合。</p>
+                </div>
+                <div>
+                    <h4>板块导航</h4>
+                    <ul>
+                        <li><a href="/ip-portal">沉浸式 IP 门户</a></li>
+                        <li><a href="/study">研学与剧本杀</a></li>
+                        <li><a href="/mall">连樟甄选商城</a></li>
+                        <li><a href="/museum">数字博物馆</a></li>
+                        <li><a href="/community">互动社区</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4>联系方式</h4>
+                    <ul>
+                        <li>广东省清远市英德市<br>连江口镇连樟村</li>
+                        <li>info@lianzhang.com</li>
+                        <li>123-456-7890</li>
+                    </ul>
+                </div>
+                <div>
+                    <h4>开放时间</h4>
+                    <ul>
+                        <li>周一至周五 9:00 - 18:00</li>
+                        <li>周末及节假日 8:00 - 20:00</li>
+                        <li>云端服务 7×24 小时在线</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="f-bottom">
+                <span>© 2025 云上樟源 · 连樟村文旅融合数字平台 保留所有权利</span>
+                <span class="latin">LIANZHANG · CLOUD PLATFORM</span>
+            </div>
+        </div>
+    </footer>
+
+    <div class="toast"></div>
+    <script src="/assets/js/site.js"></script>
+    <script>
+        var currentType = 'study';   // study | script
+        var currentItem = null;      // 待预约项目
+
+        function esc(s) {
+            return String(s).replace(/[&<>"']/g, function (c) {
+                return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+            });
+        }
+
+        function switchPanel(t) {
+            currentType = t;
+            document.getElementById('tab-study').classList.toggle('on', t === 'study');
+            document.getElementById('tab-script').classList.toggle('on', t === 'script');
+            loadItems();
+        }
+
+        function loadItems() {
+            YZY.get('/api/study/courses?type=' + currentType).then(function (d) {
+                document.getElementById('serveGrid').innerHTML = d.list.map(function (c, i) {
+                    var meta = currentType === 'study'
+                        ? '<span>◍ ' + esc(c.duration) + '</span>'
+                        : '<span>' + esc(c.players) + ' · ' + esc(c.hours) + ' · ' + c.score + '分</span>';
+                    return '<div class="card serve-card reveal' + (i ? ' d' + Math.min(i, 3) : '') + '">' +
+                        '<div class="pic" style="background-image:url(\'image/' + (currentType === 'study' ? '剧1' : '剧2') + '.png\')">' +
+                        '<span class="badge">' + (currentType === 'study' ? '研学' : '剧本杀') + '</span>' +
+                        '<span class="ico">❖</span></div>' +
+                        '<div class="body"><h3>' + esc(c.name) + '</h3><p>' + esc(c.desc) + '</p>' +
+                        '<div class="meta">' + meta +
+                        '<button class="book" onclick=\'openBook(' + JSON.stringify({ type: currentType === 'study' ? '研学' : '剧本杀', name: c.name }).replace(/'/g, '&#39;') + ')\'>立即预约</button>' +
+                        '</div></div></div>';
+                }).join('');
+                if (window.io) document.querySelectorAll(".reveal:not(.in)").forEach(function (el) { io.observe(el); });
+            });
+        }
+
+        // ---------- 预约流程 ----------
+        function openBook(item) {
+            if (!YZY.user()) { openAuth('login'); toast('请先登录后再预约'); return; }
+            currentItem = item;
+            document.getElementById('bookTitle').textContent = '预约 · ' + item.name;
+            document.getElementById('bookModal').classList.add('active');
+        }
+        function closeBook() { document.getElementById('bookModal').classList.remove('active'); }
+
+        document.getElementById('bookForm').addEventListener('submit', function (e) {
+            e.preventDefault();
+            if (!currentItem) return;
+            YZY.post('/api/study/book', {
+                type: currentItem.type, name: currentItem.name,
+                date: document.getElementById('bookDate').value,
+                people: document.getElementById('bookPeople').value,
+                phone: document.getElementById('bookPhone').value,
+                note: document.getElementById('bookNote').value
+            }).then(function () {
+                closeBook();
+                toast('预约成功！可在「我的预约」中查看');
+                loadBookings();
+            }).catch(function (err) { toast(err.message); });
+        });
+
+        function loadBookings() {
+            var box = document.getElementById('bookingBox');
+            if (!YZY.user()) {
+                box.innerHTML = '<div class="empty-tip card">登录后即可查看与预约</div>';
+                return;
+            }
+            YZY.get('/api/study/bookings').then(function (d) {
+                if (!d.total) { box.innerHTML = '<div class="empty-tip card">暂无预约，选一门课程开始吧</div>'; return; }
+                box.innerHTML = '<table><thead><tr><th>项目</th><th>类型</th><th>日期</th><th>人数</th><th>状态</th><th></th></tr></thead><tbody>' +
+                    d.list.map(function (b) {
+                        return '<tr><td>' + esc(b.name) + '</td><td>' + esc(b.type) + '</td><td>' + esc(b.date) +
+                            '</td><td>' + b.people + '</td><td class="st' + (b.status === '已取消' ? ' off' : '') + '">' + esc(b.status) +
+                            '</td><td>' + (b.status === '已预约' ? '<button class="cancel" onclick="cancel(' + b.id + ')">取消</button>' : '') + '</td></tr>';
+                    }).join('') + '</tbody></table>';
+            });
+        }
+        window.cancel = function (id) {
+            YZY.del('/api/study/bookings/' + id).then(function () { toast('已取消预约'); loadBookings(); })
+                .catch(function (e) { toast(e.message); });
+        };
+
+        // 登录态变化时刷新
+        document.addEventListener('yzy:login', loadBookings);
+        document.addEventListener('yzy:logout', loadBookings);
+
+        loadItems();
+        loadBookings();
+    </script>
+</body>
+</html>

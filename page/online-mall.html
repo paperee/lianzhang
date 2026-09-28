@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>连樟甄选商城 - 云上樟源</title>
+    <meta name="description" content="连樟甄选 · 山货出村，好物入城 —— 农产品 / 手工艺品 / 特色美食">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@300;400;500;600;700&family=Noto+Sans+SC:wght@300;400;500&family=Marcellus&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/site.css">
+    <style>
+        .mall-bar {
+            position: sticky;
+            top: 0;
+            z-index: 110;
+            background: rgba(245, 243, 236, .94);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--line);
+        }
+        .mall-bar .inner {
+            display: flex;
+            align-items: center;
+            gap: 26px;
+            padding: 14px 0;
+        }
+        .mall-bar .search {
+            flex: 1;
+            display: flex;
+            border: 1px solid var(--line);
+            background: var(--white);
+        }
+        .mall-bar .search input {
+            flex: 1;
+            border: none;
+            padding: 11px 16px;
+            font-family: var(--sans);
+            font-size: 13.2px;
+            background: none;
+            outline: none;
+        }
+        .mall-bar .search button {
+            border: none;
+            background: var(--pine);
+            color: var(--white);
+            padding: 0 26px;
+            cursor: pointer;
+            letter-spacing: .2em;
+            font-size: 12.2px;
+        }
+        .mall-bar .cart-btn {
+            position: relative;
+            border: 1px solid var(--line);
+            background: var(--white);
+            padding: 11px 22px;
+            cursor: pointer;
+            font-size: 12.7px;
+            letter-spacing: .14em;
+        }
+        .mall-bar .cart-btn i {
+            font-style: normal;
+            font-family: var(--serif);
+            color: var(--clay);
+            margin-left: 8px;
+        }
+        .mall-bar .auth-links a { margin-left: 16px; font-size: 12.7px; color: var(--ink-soft); }
+        .mall-bar .auth-links a:hover { color: var(--clay); }
+
+        .cat-strip {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            padding: 26px 0 6px;
+        }
+        .cat-strip button {
+            border: 1px solid var(--line);
+            background: var(--white);
+            padding: 8px 22px;
+            font-size: 12.7px;
+            letter-spacing: .12em;
+            cursor: pointer;
+            color: var(--ink-soft);
+            transition: all .3s;
+        }
+        .cat-strip button.on, .cat-strip button:hover {
+            background: var(--pine);
+            border-color: var(--pine);
+            color: var(--white);
+        }
+
+        .g-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 24px;
+        }
+        .g-card { overflow: hidden; cursor: pointer; }
+        .g-card .pic {
+            height: 230px;
+            background-size: cover;
+            background-position: center;
+            position: relative;
+            transition: transform .9s var(--ease);
+        }
+        .g-card .pic .b {
+            position: absolute; top: 14px; left: 14px;
+            background: var(--clay); color: var(--white);
+            font-size: 10.8px; letter-spacing: .14em; padding: 3px 11px;
+        }
+        .g-card .body { padding: 18px 20px 20px; }
+        .g-card .name {
+            font-size: 13.6px;
+            line-height: 1.6;
+            height: 3.2em;
+            overflow: hidden;
+            margin-bottom: 10px;
+        }
+        .g-card .row { display: flex; align-items: baseline; gap: 10px; }
+        .g-card .price { font-family: var(--serif); font-size: 18.8px; color: var(--clay); }
+        .g-card .orig { font-size: 11.8px; color: var(--ink-soft); text-decoration: line-through; }
+        .g-card .sales { margin-left: auto; font-size: 11.3px; color: var(--ink-soft); }
+
+        /* 购物车抽屉 */
+        .drawer {
+            position: fixed; top: 0; right: 0; bottom: 0;
+            width: min(420px, 92vw);
+            background: var(--paper);
+            z-index: 260;
+            transform: translateX(100%);
+            transition: transform .5s var(--ease);
+            display: flex;
+            flex-direction: column;
+            box-shadow: -20px 0 60px rgba(38, 40, 33, .18);
+        }
+        .drawer.open { transform: translateX(0); }
+        .drawer .head {
+            padding: 22px 26px;
+            border-bottom: 1px solid var(--line);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-family: var(--serif);
+            font-size: 17.9px;
+            letter-spacing: .16em;
+        }
+        .drawer .head button { background: none; border: none; font-size: 20.7px; cursor: pointer; color: var(--ink-soft); }
+        .drawer .list { flex: 1; overflow: auto; padding: 18px 26px; display: grid; gap: 14px; align-content: start; }
+        .drawer .ci { display: flex; gap: 14px; background: var(--white); border: 1px solid var(--line); padding: 12px; }
+        .drawer .ci .pic { width: 64px; height: 64px; background-size: cover; background-position: center; flex: none; }
+        .drawer .ci .n { font-size: 12.7px; line-height: 1.5; }
+        .drawer .ci .p { font-family: var(--serif); color: var(--clay); margin-top: 4px; }
+        .drawer .ci .rm { margin-left: auto; background: none; border: none; cursor: pointer; color: var(--ink-soft); font-size: 15px; }
+        .drawer .foot { border-top: 1px solid var(--line); padding: 20px 26px; display: grid; gap: 12px; }
+        .drawer .foot .total { display: flex; justify-content: space-between; font-size: 13.2px; }
+        .drawer .foot .total b { font-family: var(--serif); font-size: 20.7px; color: var(--clay); }
+
+        @media (max-width: 1100px) { .g-grid { grid-template-columns: repeat(3, 1fr); } }
+        @media (max-width: 860px) { .g-grid { grid-template-columns: repeat(2, 1fr); } }
+        @media (max-width: 560px) {
+            .g-grid { grid-template-columns: 1fr; }
+            /* 顶栏一行排不下:改两行,搜索框通栏 */
+            .mall-bar .inner { flex-wrap: wrap; row-gap: 10px; }
+            .mall-bar .search { order: 3; flex-basis: 100%; }
+            .mall-bar .search input { padding: 10px 12px; }
+            .mall-bar .search button { padding: 0 16px; }
+            .mall-bar .auth-links { order: 2; margin-left: auto; }
+            .mall-bar .auth-links a { margin-left: 10px; }
+            .mall-bar .cart-btn { order: 2; padding: 10px 14px; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="subnav" style="position:static; background:var(--pine-deep); padding-bottom:8px">
+        <a class="logo" href="/"><span class="seal">樟</span><span>云上樟源</span></a>
+        <ul class="nav-links">
+            <li><a href="#goods">全部好物</a></li>
+            <li><a href="/museum">数字博物馆</a></li>
+            <li><a href="/community">互动社区</a></li>
+        </ul>
+        <a class="back" href="/">← 返回首页</a>
+    </nav>
+
+    <!-- 商城工具条 -->
+    <div class="mall-bar">
+        <div class="container inner">
+            <span style="font-family:var(--serif); font-size: 18.8px; letter-spacing:.2em; white-space:nowrap">连樟甄选</span>
+            <div class="search">
+                <input id="kw" placeholder="搜索连樟特产、农产品、手工艺品…" onkeydown="if(event.key==='Enter')doSearch()">
+                <button onclick="doSearch()">搜索</button>
+            </div>
+            <div class="auth-links" id="authArea"></div>
+            <button class="cart-btn" onclick="openCart()">购物车<i id="cartCount">0</i></button>
+        </div>
+    </div>
+
+    <!-- 横幅 -->
+    <section class="hero" style="min-height:46vh">
+        <div class="hero-bg" style="background-image:url('image/甄选1.jpg')"></div>
+        <div class="container hero-inner" style="padding:96px 0 72px">
+            <p class="kick">LIANZHANG SELECTED</p>
+            <h1 style="font-size: clamp(32px,4.7vw,60.2px)">山货出村 · 好物入城</h1>
+            <p class="hero-desc">每一件甄选好物，都来自连樟村的田间地头与匠人之手。全场满 99 元包邮。</p>
+        </div>
+    </section>
+
+    <section id="goods" class="section" style="padding-top:52.6px">
+        <div class="container">
+            <div class="cat-strip" id="catStrip"></div>
+            <div class="g-grid" id="grid" style="margin-top:26.3px"></div>
+        </div>
+    </section>
+
+    <footer class="site">
+        <div class="container">
+            <div class="f-grid">
+                <div class="f-brand">
+                    <a class="logo" href="/"><span class="seal">樟</span><span>云上樟源</span></a>
+                    <p>连樟甄选，让每一份山货都被看见，让每一位村民都被温柔以待。</p>
+                </div>
+                <div>
+                    <h4>板块导航</h4>
+                    <ul>
+                        <li><a href="/ip-portal">沉浸式 IP 门户</a></li>
+                        <li><a href="/study">研学与剧本杀</a></li>
+                        <li><a href="/mall">连樟甄选商城</a></li>
+                        <li><a href="/museum">数字博物馆</a></li>
+                        <li><a href="/community">互动社区</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4>售后服务</h4>
+                    <ul>
+                        <li>正品保障 · 品质保证</li>
+                        <li>七天无理由退换</li>
+                        <li>客服热线 123-456-7899</li>
+                    </ul>
+                </div>
+                <div>
+                    <h4>配送说明</h4>
+                    <ul>
+                        <li>全场满 99 元包邮</li>
+                        <li>下单后 48 小时内发货</li>
+                        <li>生鲜类商品冷链配送</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="f-bottom">
+                <span>© 2025 云上樟源 · 连樟村文旅融合数字平台 保留所有权利</span>
+                <span class="latin">LIANZHANG · CLOUD PLATFORM</span>
+            </div>
+        </div>
+    </footer>
+
+    <!-- 购物车抽屉 -->
+    <div class="drawer" id="drawer">
+        <div class="head">我的购物车<button onclick="closeCart()">×</button></div>
+        <div class="list" id="cartList"></div>
+        <div class="foot">
+            <div class="total"><span>合计</span><b id="cartTotal">¥0</b></div>
+            <button class="btn solid" style="justify-content:center" onclick="checkout()"><span>去结算</span></button>
+        </div>
+    </div>
+
+    <!-- 登录 / 注册模态框 -->
+    <div class="modal" id="authModal">
+        <div class="sheet">
+            <button class="x" onclick="closeAuth()">×</button>
+            <div class="tabs">
+                <button class="active" onclick="switchTab('login')">登录</button>
+                <button onclick="switchTab('register')">注册</button>
+            </div>
+            <form id="loginForm">
+                <div class="field"><label>用户名 / 手机号</label><input id="loginUsername" required placeholder="请输入用户名或手机号"></div>
+                <div class="field"><label>密码</label><input id="loginPassword" type="password" required placeholder="请输入密码"></div>
+                <button class="btn solid" type="submit" style="width:100%;justify-content:center"><span>登录</span></button>
+            </form>
+            <form id="registerForm" style="display:none">
+                <div class="field"><label>用户名</label><input id="registerUsername" required placeholder="请输入用户名"></div>
+                <div class="field"><label>手机号</label><input id="registerPhone" type="tel" required placeholder="请输入手机号"></div>
+                <div class="field"><label>用户类型</label>
+                    <select id="registerType" required>
+                        <option value="student">学生</option>
+                        <option value="social">社会人士</option>
+                    </select>
+                </div>
+                <div class="field"><label>密码</label><input id="registerPassword" type="password" required minlength="6" placeholder="至少 6 位"></div>
+                <div class="field"><label>确认密码</label><input id="registerConfirmPassword" type="password" required placeholder="请再次输入密码"></div>
+                <button class="btn solid" type="submit" style="width:100%;justify-content:center"><span>注册</span></button>
+            </form>
+        </div>
+    </div>
+
+    <div class="toast"></div>
+    <script src="/assets/js/site.js"></script>
+    <script>
+        var curCat = '', curKw = '';
+
+        function esc(s) {
+            return String(s).replace(/[&<>"']/g, function (c) {
+                return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+            });
+        }
+
+        function loadProducts() {
+            var q = (curKw ? '&q=' + encodeURIComponent(curKw) : '') + (curCat ? '&category=' + encodeURIComponent(curCat) : '');
+            YZY.get('/api/mall/products?' + q).then(function (d) {
+                document.getElementById('grid').innerHTML = d.list.map(function (p, i) {
+                    return '<div class="card g-card reveal' + (i ? ' d' + Math.min(i, 3) : '') + '" onclick="addCart(' + p.id + ')">' +
+                        '<div class="pic" style="background-image:url(\'' + p.image + '\')">' +
+                        (p.badge ? '<span class="b">' + esc(p.badge) + '</span>' : '') + '</div>' +
+                        '<div class="body"><div class="name">' + esc(p.name) + '</div>' +
+                        '<div class="row"><span class="price">¥' + p.price + '</span>' +
+                        (p.original ? '<span class="orig">¥' + p.original + '</span>' : '') +
+                        '<span class="sales">已售 ' + (p.sales / 10000).toFixed(1) + '万件</span></div>' +
+                        '</div></div>';
+                }).join('') || '<p style="grid-column:1/-1;text-align:center;color:var(--ink-soft);padding:60px 0">没有找到相关商品</p>';
+                if (window.io) document.querySelectorAll(".reveal:not(.in)").forEach(function (el) { io.observe(el); });
+            });
+            YZY.get('/api/mall/products').then(function (d) {
+                var cats = [''].concat(d.categories);
+                document.getElementById('catStrip').innerHTML = cats.map(function (c) {
+                    return '<button class="' + (c === curCat ? 'on' : '') + '" onclick="pickCat(\'' + c + '\')">' + (c || '全部') + '</button>';
+                }).join('');
+            });
+        }
+
+        function pickCat(c) { curCat = c === '全部' ? '' : c; loadProducts(); }
+        function doSearch() {
+            curKw = document.getElementById('kw').value.trim();
+            loadProducts();
+        }
+        window.addEventListener('DOMContentLoaded', function () {
+            document.getElementById('kw').value = '';
+        });
+
+        // ---------- 购物车 ----------
+        function addCart(pid) {
+            YZY.post('/api/mall/cart/add', { product_id: pid, qty: 1 }).then(function () {
+                toast('已加入购物车');
+                loadCart();
+            }).catch(function (e) { toast(e.message); });
+        }
+        function loadCart() {
+            YZY.get('/api/mall/cart').then(function (items) {
+                document.getElementById('cartCount').textContent =
+                    items.reduce(function (n, i) { return n + i.qty; }, 0);
+                document.getElementById('cartList').innerHTML = items.map(function (i) {
+                    return '<div class="ci"><div class="pic" style="background-image:url(\'' + i.image + '\')"></div>' +
+                        '<div><div class="n">' + esc(i.name) + '</div><div class="p">¥' + i.price + ' × ' + i.qty + '</div></div>' +
+                        '<button class="rm" onclick="rmCart(' + i.product_id + ')">×</button></div>';
+                }).join('') || '<p style="text-align:center;color:var(--ink-soft);padding:40px 0">购物车是空的<br>去挑几件好物吧</p>';
+                document.getElementById('cartTotal').textContent = '¥' +
+                    items.reduce(function (n, i) { return n + i.price * i.qty; }, 0).toFixed(2);
+            });
+        }
+        function rmCart(pid) {
+            YZY.del('/api/mall/cart/' + pid).then(loadCart).catch(function (e) { toast(e.message); });
+        }
+        function openCart() { document.getElementById('drawer').classList.add('open'); loadCart(); }
+        function closeCart() { document.getElementById('drawer').classList.remove('open'); }
+        function checkout() {
+            if (!YZY.user()) { closeCart(); openAuth('login'); toast('请先登录后结算'); return; }
+            YZY.post('/api/mall/order').then(function (d) {
+                toast('下单成功！订单号 #' + d.order_id + '，合计 ¥' + d.total);
+                closeCart();
+                loadCart();
+            }).catch(function (e) { toast(e.message); });
+        }
+        document.addEventListener('yzy:login', loadCart);
+
+        loadProducts();
+        loadCart();
+    </script>
+</body>
+</html>

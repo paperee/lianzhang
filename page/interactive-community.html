@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>互动社区与用户生成内容 - 云上樟源</title>
+    <meta name="description" content="分享游记攻略 · 参与话题活动 · 问答论坛 —— 连樟村云上客厅">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@300;400;500;600;700&family=Noto+Sans+SC:wght@300;400;500&family=Marcellus&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/site.css">
+    <style>
+        .pub-box {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            background: var(--white);
+            border: 1px solid var(--line);
+            padding: 20px 24px;
+            cursor: pointer;
+            transition: border-color .3s;
+        }
+        .pub-box:hover { border-color: var(--leaf); }
+        .pub-box .avatar {
+            width: 44px; height: 44px;
+            border-radius: 50%;
+            background: var(--pine);
+            color: var(--white);
+            display: grid; place-items: center;
+            font-family: var(--serif);
+            flex: none;
+        }
+        .pub-box .ph { flex: 1; color: var(--ink-soft); font-size: 13.6px; }
+
+        .feed-tabs { display: flex; gap: 12px; margin: 34px 0 26px; flex-wrap: wrap; }
+        .feed-tabs button {
+            border: 1px solid var(--line);
+            background: var(--white);
+            padding: 7px 24px;
+            font-size: 12.7px;
+            letter-spacing: .14em;
+            color: var(--ink-soft);
+            cursor: pointer;
+            transition: all .3s;
+        }
+        .feed-tabs button.on, .feed-tabs button:hover { background: var(--pine); border-color: var(--pine); color: var(--white); }
+
+        .post { padding: 30px 34px; margin-bottom: 22px; }
+        .post .head { display: flex; align-items: center; gap: 14px; margin-bottom: 16px; }
+        .post .head .avatar {
+            width: 42px; height: 42px;
+            border-radius: 50%;
+            background: var(--clay);
+            color: var(--white);
+            display: grid; place-items: center;
+            font-family: var(--serif);
+        }
+        .post .head b { font-family: var(--serif); letter-spacing: .1em; display: block; font-size: 14.6px; }
+        .post .head time { font-size: 11.8px; color: var(--ink-soft); }
+        .post .head .chip {
+            margin-left: auto;
+            font-size: 11.3px;
+            letter-spacing: .16em;
+            color: var(--leaf);
+            border: 1px solid var(--leaf);
+            padding: 3px 12px;
+            border-radius: 999px;
+        }
+        .post h3 { font-family: var(--serif); font-size: 18.8px; letter-spacing: .08em; margin-bottom: 10px; }
+        .post p { font-size: 13.6px; color: var(--ink-soft); }
+        .post .acts {
+            display: flex; gap: 26px;
+            border-top: 1px solid var(--line);
+            margin-top: 18px; padding-top: 16px;
+        }
+        .post .acts button {
+            background: none; border: none; cursor: pointer;
+            font-size: 12.7px; color: var(--ink-soft); letter-spacing: .1em;
+            display: flex; align-items: center; gap: 7px;
+            transition: color .3s;
+        }
+        .post .acts button:hover { color: var(--clay); }
+        .post .acts button.liked { color: var(--clay); }
+        .post .cmts { margin-top: 16px; display: grid; gap: 8px; }
+        .post .cmts .c { font-size: 12.7px; color: var(--ink-soft); background: var(--paper-2); padding: 8px 14px; }
+        .post .cmts .c b { color: var(--ink); font-weight: 500; }
+        .post .cmt-bar { display: flex; gap: 10px; margin-top: 12px; }
+        .post .cmt-bar input {
+            flex: 1; border: 1px solid var(--line);
+            padding: 9px 14px; font-family: var(--sans); font-size: 12.7px; outline: none;
+        }
+        .post .cmt-bar button {
+            border: 1px solid var(--line); background: var(--white);
+            padding: 0 20px; cursor: pointer; font-size: 12.2px; letter-spacing: .12em;
+        }
+        .post .cmt-bar button:hover { background: var(--pine); color: var(--white); border-color: var(--pine); }
+
+        .act-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 26px; }
+        .act-card { padding: 34px 30px; position: relative; }
+        .act-card .badge {
+            position: absolute; top: 22px; right: 22px;
+            font-size: 11.3px; letter-spacing: .16em;
+            color: var(--clay);
+        }
+        .act-card .ic { font-size: 24.4px; color: var(--leaf); margin-bottom: 18px; }
+        .act-card h3 { font-family: var(--serif); font-size: 17.9px; letter-spacing: .1em; margin-bottom: 10px; }
+        .act-card p { font-size: 12.7px; color: var(--ink-soft); margin-bottom: 18px; }
+        .act-card .info { font-size: 11.8px; color: var(--ink-soft); letter-spacing: .06em; }
+
+        .qa { padding: 26px 30px; margin-bottom: 18px; }
+        .qa h3 { font-family: var(--serif); font-size: 16.4px; letter-spacing: .06em; }
+        .qa .meta { font-size: 11.8px; color: var(--ink-soft); margin-top: 8px; display: flex; gap: 22px; }
+
+        .ask-row { display: flex; gap: 12px; margin: 26px 0 34px; }
+        .ask-row input {
+            flex: 1; border: 1px solid var(--line); background: var(--white);
+            padding: 13px 18px; font-family: var(--sans); font-size: 13.6px; outline: none;
+        }
+        .ask-row input:focus { border-color: var(--leaf); }
+
+        @media (max-width: 960px) { .act-grid { grid-template-columns: 1fr; } .feed-tabs {gap: 5px} }
+    </style>
+</head>
+<body>
+
+    <nav class="subnav">
+        <a class="logo" href="/"><span class="seal">樟</span><span>云上樟源</span></a>
+        <ul class="nav-links">
+            <li><a href="#feed">内容流</a></li>
+            <li><a href="#activities">话题活动</a></li>
+            <li><a href="#forum">问答论坛</a></li>
+        </ul>
+        <a class="back" href="/">← 返回首页</a>
+    </nav>
+
+    <section class="hero">
+        <div class="hero-bg" style="background-image:url('image/互4.jpg')"></div>
+        <div class="container hero-inner">
+            <p class="kick">COMMUNITY</p>
+            <h1>互动社区<br>与用户生成内容</h1>
+            <p class="hero-desc">分享你的连樟故事，发现更多精彩。这里是由游客、村民与研究者共同书写的「云上客厅」。</p>
+            <div class="hero-stats">
+                <div><div class="num">5000+</div><div class="lbl">活跃用户</div></div>
+                <div><div class="num">20000+</div><div class="lbl">精彩内容</div></div>
+                <div><div class="num">100+</div><div class="lbl">热门话题</div></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 发布 -->
+    <section class="section" style="padding-bottom:0">
+        <div class="container">
+            <div class="pub-box reveal" onclick="openPublish()">
+                <div class="avatar" id="myAvatar">☁</div>
+                <div class="ph" id="pubPh">分享你的连樟故事…</div>
+                <button class="btn solid"><span>发布</span></button>
+            </div>
+        </div>
+    </section>
+
+    <!-- 内容流 -->
+    <section id="feed" class="section" style="padding-top:0">
+        <div class="container">
+            <div class="feed-tabs" id="feedTabs">
+                <button class="on" data-t="" onclick="pickTab(this)">全部</button>
+                <button data-t="游记" onclick="pickTab(this)">游记</button>
+                <button data-t="摄影" onclick="pickTab(this)">摄影</button>
+                <button data-t="攻略" onclick="pickTab(this)">攻略</button>
+                <button data-t="体验" onclick="pickTab(this)">体验</button>
+            </div>
+            <div id="postList"></div>
+        </div>
+    </section>
+
+    <!-- 话题活动 -->
+    <section id="activities" class="section alt">
+        <div class="container">
+            <div class="sec-head reveal">
+                <span class="eyebrow">TOPIC EVENTS</span>
+                <h2>热门话题活动</h2>
+            </div>
+            <div class="act-grid" id="actGrid"></div>
+        </div>
+    </section>
+
+    <!-- 问答论坛 -->
+    <section id="forum" class="section">
+        <div class="container">
+            <div class="sec-head reveal">
+                <span class="eyebrow">Q&amp;A FORUM</span>
+                <h2>问答论坛</h2>
+                <p>关于连樟村的一切疑问，都有热心的乡亲与老驴友为你解答。</p>
+            </div>
+            <div class="ask-row reveal">
+                <input id="askInput" placeholder="输入你的问题，如：连樟村适合亲子游吗？" onkeydown="if(event.key==='Enter')ask()">
+                <button class="btn solid" onclick="ask()"><span>提问</span></button>
+            </div>
+            <div id="qaList"></div>
+        </div>
+    </section>
+
+    <!-- 发布模态框 -->
+    <div class="modal" id="pubModal">
+        <div class="sheet">
+            <button class="x" onclick="closePub()">×</button>
+            <h3>发布内容</h3>
+            <form id="pubForm">
+                <div class="field"><label>内容类型</label>
+                    <select id="pubType">
+                        <option>游记</option>
+                        <option>摄影</option>
+                        <option>攻略</option>
+                        <option>体验</option>
+                    </select>
+                </div>
+                <div class="field"><label>标题</label><input id="pubTitle" required maxlength="50" placeholder="一句话介绍你的内容"></div>
+                <div class="field"><label>正文</label><textarea id="pubContent" required maxlength="2000" placeholder="把故事写下来…"></textarea></div>
+                <button class="btn solid" type="submit" style="width:100%;justify-content:center"><span>发布</span></button>
+            </form>
+        </div>
+    </div>
+
+    <!-- 登录 / 注册模态框 -->
+    <div class="modal" id="authModal">
+        <div class="sheet">
+            <button class="x" onclick="closeAuth()">×</button>
+            <div class="tabs">
+                <button class="active" onclick="switchTab('login')">登录</button>
+                <button onclick="switchTab('register')">注册</button>
+            </div>
+            <form id="loginForm">
+                <div class="field"><label>用户名 / 手机号</label><input id="loginUsername" required placeholder="请输入用户名或手机号"></div>
+                <div class="field"><label>密码</label><input id="loginPassword" type="password" required placeholder="请输入密码"></div>
+                <button class="btn solid" type="submit" style="width:100%;justify-content:center"><span>登录</span></button>
+            </form>
+            <form id="registerForm" style="display:none">
+                <div class="field"><label>用户名</label><input id="registerUsername" required placeholder="请输入用户名"></div>
+                <div class="field"><label>手机号</label><input id="registerPhone" type="tel" required placeholder="请输入手机号"></div>
+                <div class="field"><label>用户类型</label>
+                    <select id="registerType" required>
+                        <option value="student">学生</option>
+                        <option value="social">社会人士</option>
+                    </select>
+                </div>
+                <div class="field"><label>密码</label><input id="registerPassword" type="password" required minlength="6" placeholder="至少 6 位"></div>
+                <div class="field"><label>确认密码</label><input id="registerConfirmPassword" type="password" required placeholder="请再次输入密码"></div>
+                <button class="btn solid" type="submit" style="width:100%;justify-content:center"><span>注册</span></button>
+            </form>
+        </div>
+    </div>
+
+    <footer class="site">
+        <div class="container">
+            <div class="f-grid">
+                <div class="f-brand">
+                    <a class="logo" href="/"><span class="seal">樟</span><span>云上樟源</span></a>
+                    <p>来这里分享，也来这里收获。游记、攻略、主题活动与最真实的乡村体验——由你，亲手书写。</p>
+                </div>
+                <div>
+                    <h4>板块导航</h4>
+                    <ul>
+                        <li><a href="/ip-portal">沉浸式 IP 门户</a></li>
+                        <li><a href="/study">研学与剧本杀</a></li>
+                        <li><a href="/mall">连樟甄选商城</a></li>
+                        <li><a href="/museum">数字博物馆</a></li>
+                        <li><a href="/community">互动社区</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4>社区公约</h4>
+                    <ul>
+                        <li>友善交流，尊重他人</li>
+                        <li>内容真实，图文原创</li>
+                        <li>禁止广告与不当言论</li>
+                    </ul>
+                </div>
+                <div>
+                    <h4>联系方式</h4>
+                    <ul>
+                        <li>广东省清远市英德市<br>连江口镇连樟村</li>
+                        <li>info@lianzhang.com</li>
+                        <li>123-456-7890</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="f-bottom">
+                <span>© 2025 云上樟源 · 连樟村文旅融合数字平台 保留所有权利</span>
+                <span class="latin">LIANZHANG · CLOUD PLATFORM</span>
+            </div>
+        </div>
+    </footer>
+
+    <div class="toast"></div>
+    <script src="/assets/js/site.js"></script>
+    <script>
+        var curTab = '';
+
+        function esc(s) {
+            return String(s).replace(/[&<>"']/g, function (c) {
+                return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+            });
+        }
+
+        function pickTab(btn) {
+            document.querySelectorAll('#feedTabs button').forEach(function (b) { b.classList.remove('on'); });
+            btn.classList.add('on');
+            curTab = btn.dataset.t;
+            loadPosts();
+        }
+
+        function loadPosts() {
+            var q = curTab ? '?type=' + encodeURIComponent(curTab) : '';
+            YZY.get('/api/community/posts' + q).then(function (d) {
+                document.getElementById('postList').innerHTML = d.list.map(function (p) {
+                    var initial = esc(p.author.charAt(0));
+                    return '<div class="card post reveal in">' +
+                        '<div class="head"><div class="avatar">' + initial + '</div>' +
+                        '<div><b>' + esc(p.author) + '</b><time>' + esc(p.created) + '</time></div>' +
+                        '<span class="chip">' + esc(p.type) + '</span></div>' +
+                        '<h3>' + esc(p.title) + '</h3><p>' + esc(p.content) + '</p>' +
+                        '<div class="acts">' +
+                        '<button onclick="like(' + p.id + ',this)" data-n="' + p.likes + '">♥ <span>' + p.likes + '</span></button>' +
+                        '<button onclick="toggleCmt(' + p.id + ')">🗨 评论 <span>' + (p.comments || 0) + '</span></button>' +
+                        '</div>' +
+                        '<div class="cmt-zone" id="cmt' + p.id + '" style="display:none"></div>' +
+                        '</div>';
+                }).join('');
+            });
+        }
+
+        function like(pid, btn) {
+            YZY.post('/api/community/posts/' + pid + '/like').then(function (d) {
+                btn.classList.add('liked');
+                btn.querySelector('span').textContent = d.likes;
+            }).catch(function (e) { toast(e.message); });
+        }
+
+        function toggleCmt(pid) {
+            var zone = document.getElementById('cmt' + pid);
+            if (zone.style.display === 'none') {
+                zone.style.display = 'block';
+                YZY.get('/api/community/posts/' + pid + '/comments').then(function (d) {
+                    zone.innerHTML = '<div class="cmts">' +
+                        d.list.map(function (c) { return '<div class="c"><b>' + esc(c.author) + '：</b>' + esc(c.content) + '</div>'; }).join('') +
+                        '</div><div class="cmt-bar"><input placeholder="写下你的评论…" id="cmtIn' + pid + '">' +
+                        '<button onclick="sendCmt(' + pid + ')">发送</button></div>';
+                });
+            } else { zone.style.display = 'none'; }
+        }
+
+        function sendCmt(pid) {
+            var input = document.getElementById('cmtIn' + pid);
+            if (!input.value.trim()) return;
+            YZY.post('/api/community/posts/' + pid + '/comments', { content: input.value.trim() })
+                .then(function () { toast('评论成功'); toggleCmt(pid); toggleCmt(pid); loadPosts(); })
+                .catch(function (e) { toast(e.message); });
+        }
+
+        // ---------- 发布 ----------
+        function openPublish() {
+            if (!YZY.user()) { openAuth('login'); toast('请先登录后再发布'); return; }
+            document.getElementById('pubModal').classList.add('active');
+        }
+        function closePub() { document.getElementById('pubModal').classList.remove('active'); }
+        document.getElementById('pubForm').addEventListener('submit', function (e) {
+            e.preventDefault();
+            YZY.post('/api/community/posts', {
+                type: document.getElementById('pubType').value,
+                title: document.getElementById('pubTitle').value.trim(),
+                content: document.getElementById('pubContent').value.trim()
+            }).then(function () {
+                closePub();
+                toast('发布成功');
+                document.getElementById('pubForm').reset();
+                loadPosts();
+            }).catch(function (e) { toast(e.message); });
+        });
+
+        // ---------- 话题活动 ----------
+        YZY.get('/api/community/activities').then(function (d) {
+            document.getElementById('actGrid').innerHTML = d.list.map(function (a, i) {
+                return '<div class="card act-card reveal' + (i ? ' d' + Math.min(i, 3) : '') + '">' +
+                    '<span class="badge">' + esc(a.badge) + '</span>' +
+                    '<div class="ic">◍</div><h3>' + esc(a.title) + '</h3><p>' + esc(a.desc) + '</p>' +
+                    '<div class="info">' + (a.joined ? a.joined + ' 人参与 · ' : '') + esc(a.deadline) + '</div></div>';
+            }).join('');
+            if (window.io) document.querySelectorAll(".reveal:not(.in)").forEach(function (el) { io.observe(el); });
+        });
+
+        // ---------- 问答 ----------
+        function loadQa() {
+            YZY.get('/api/community/questions').then(function (d) {
+                document.getElementById('qaList').innerHTML = d.list.map(function (q) {
+                    return '<div class="card qa reveal in"><h3>Q · ' + esc(q.title) + '</h3>' +
+                        '<div class="meta"><span>◍ ' + esc(q.asker) + '</span><span>' + esc(q.created) + '</span>' +
+                        '<span>' + q.answers + ' 个回答 · ' + q.views + ' 次浏览</span></div></div>';
+                }).join('');
+            });
+        }
+        function ask() {
+            var input = document.getElementById('askInput');
+            if (!input.value.trim()) return;
+            if (!YZY.user()) { openAuth('login'); toast('请先登录后再提问'); return; }
+            YZY.post('/api/community/questions', { title: input.value.trim() }).then(function () {
+                input.value = '';
+                toast('提问成功');
+                loadQa();
+            }).catch(function (e) { toast(e.message); });
+        }
+
+        document.addEventListener('yzy:login', function () {
+            var u = YZY.user();
+            document.getElementById('myAvatar').textContent = u.username.charAt(0);
+            document.getElementById('pubPh').textContent = '分享你的连樟故事，' + u.username + '…';
+        });
+
+        loadPosts();
+        loadQa();
+    </script>
+</body>
+</html>
